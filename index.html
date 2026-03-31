@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Registration Form</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {font-family: Arial; background:#f4f6f9;}
+.container {
+  background:white;
+  padding:25px;
+  margin:30px auto;
+  max-width:500px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+input {width:100%; padding:12px; margin:8px 0;}
+button {
+  background:#0d47a1;
+  color:white;
+  padding:14px;
+  border:none;
+  width:100%;
+}
+img{width:100px; margin-top:10px; display:none;}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+emailjs.init("YOUR_PUBLIC_KEY");
+})();
+</script>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Registration Form</h2>
+
+<div class="container">
+
+<form id="form">
+
+<input type="text" id="name" placeholder="Name" required>
+<input type="text" id="phone" placeholder="Phone">
+<input type="text" id="name" placeholder="Name" required>
+<input type="text" id="gender" placeholder="Gender">
+<input type="number" id="age" placeholder="Age">
+<input type="date" id="dob">
+<input type="text" id="elmis" placeholder="ELMIS ID">
+<input type="text" id="passport" placeholder="Passport">
+<input type="text" id="phone" placeholder="Phone">
+<input type="text" id="birth" placeholder="Birth Place">
+<input type="text" id="visa" placeholder="Visa">
+<input type="text" id="country" placeholder="Country">
+
+<label>📸 Profile Photo</label>
+<input type="file" id="photo" accept="image/*">
+<img id="preview1">
+
+<label>🛂 Passport</label>
+<input type="file" id="passportFile" accept="image/*">
+<img id="preview2">
+
+<label>🎓 Education Document (PDF)</label>
+<input type="file" id="eduFile" accept=".pdf">
+
+<br><br>
+<button type="submit">Submit</button>
+
+</form>
+
+</div>
+
+<script>
+
+// 🔐 TELEGRAM
+let token = "PUT_YOUR_TOKEN_HERE";
+let chat_id = "PUT_YOUR_CHAT_ID";
+
+// 📸 PREVIEW
+function preview(input, imgId){
+let file = input.files[0];
+if(file){
+let reader = new FileReader();
+reader.onload = function(e){
+let img = document.getElementById(imgId);
+img.src = e.target.result;
+img.style.display = "block";
+}
+reader.readAsDataURL(file);
+}
+}
+
+photo.onchange = () => preview(photo,"preview1");
+passportFile.onchange = () => preview(passportFile,"preview2");
+
+// 🚀 SUBMIT
+document.getElementById("form").addEventListener("submit", function(e){
+e.preventDefault();
+
+let text = `
+New Registration
+
+Name: ${name.value}
+Phone: ${phone.value}
+`;
+
+// 📩 TEXT
+fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body: JSON.stringify({chat_id,text})
+});
+
+// 📸 IMAGE SEND
+function sendPhoto(file){
+if(file){
+let formData = new FormData();
+formData.append("chat_id", chat_id);
+formData.append("photo", file);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+method:"POST",
+body: formData
+});
+}
+}
+
+// 📄 PDF SEND
+function sendDocument(file){
+if(file){
+let formData = new FormData();
+formData.append("chat_id", chat_id);
+formData.append("document", file);
+
+fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+method:"POST",
+body: formData
+});
+}
+}
+
+// SEND FILES
+sendPhoto(photo.files[0]);
+sendPhoto(passportFile.files[0]);
+sendDocument(eduFile.files[0]);
+
+// 📧 EMAIL
+emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
+name: name.value,
+phone: phone.value
+});
+
+alert("Sent Successfully ✅");
+
+});
+
+</script>
+
+</body>
+</html>
