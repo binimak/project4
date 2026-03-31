@@ -95,7 +95,16 @@ preview.src = URL.createObjectURL(file);
 preview.style.display="block";
 }
 };
-
+await fetch("/.netlify/functions/send", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({
+    name: name.value,
+    phone: phone.value,
+    passport: passport.value,
+    country: country.value
+  })
+});
 form.onsubmit = async (e)=>{
 e.preventDefault();
 
