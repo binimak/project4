@@ -5,7 +5,7 @@ exports.handler = async (event) => {
   const token = process.env.TG_TOKEN;
   const chat_id = process.env.CHAT_ID;
 
-  const body = JSON.parse(event.body);
+  const body = event.body ? JSON.parse(event.body) : {};
 
   const text = `
 New User:
@@ -49,7 +49,7 @@ Country: ${body.country}
       body: form
     });
   }
-
+const body = event.body ? JSON.parse(event.body) : {};
   return {
     statusCode: 200,
     body: "All sent"
