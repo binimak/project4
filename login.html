@@ -1,31 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Admin Login</title>
-<style>
-body{font-family:Arial;background:#0d47a1;color:white;text-align:center;padding-top:100px;}
-input{padding:10px;width:250px;margin:10px;}
-button{padding:10px 20px;background:white;color:#0d47a1;border:none;}
-</style>
-</head>
+<body style="text-align:center;margin-top:100px;">
 
-<body>
+<h2>Admin Login</h2>
 
-<h2>🔐 Admin Login</h2>
+<input id="email" placeholder="Email"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
 
-<input type="password" id="pass" placeholder="Enter Password">
-<br>
 <button onclick="login()">Login</button>
 
 <script>
 function login(){
-let p = document.getElementById("pass").value;
-
-if(p === "admin123"){
+if(email.value=="admin@gmail.com" && password.value=="1234"){
 localStorage.setItem("admin","true");
-window.location.href="dashboard.html";
+location.href="dashboard.html";
 }else{
-alert("Wrong Password ❌");
+alert("Wrong ❌");
 }
 }
 </script>
