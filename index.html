@@ -10,7 +10,6 @@ body {
     background: linear-gradient(to right, #0d47a1, #1976d2);
     margin:0;
 }
-
 .container {
     background:white;
     padding:25px;
@@ -18,13 +17,11 @@ body {
     max-width:500px;
     border-radius:15px;
 }
-
 input {
     width:100%;
     padding:12px;
     margin:8px 0;
 }
-
 button {
     background:#0d47a1;
     color:white;
@@ -32,9 +29,6 @@ button {
     border:none;
     width:100%;
 }
-
-#preview {width:100px; display:none; margin:auto;}
-
 #toast {
 position:fixed;
 bottom:20px;
@@ -46,11 +40,6 @@ display:none;
 }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-<script>
-(function(){ emailjs.init("YOUR_PUBLIC_KEY"); })();
-</script>
-
 </head>
 
 <body>
@@ -58,7 +47,6 @@ display:none;
 <h2 style="text-align:center;color:white;">Registration Form</h2>
 
 <div class="container">
-
 <form id="form">
 
 <input type="text" id="name" placeholder="Name" required>
@@ -68,62 +56,46 @@ display:none;
 
 <label>📸 Photo</label>
 <input type="file" id="photo">
-<img id="preview">
 
 <label>📄 Passport PDF</label>
 <input type="file" id="passportFile">
 
-<label>🎓 Education PDF</label>
-<input type="file" id="eduFile">
-
 <button type="submit">Submit</button>
 
 </form>
-
 </div>
 
 <div id="toast">✅ Sent Successfully</div>
 
+<!-- ✅ IMPORTANT: script ከዚህ በታች -->
 <script>
-let token ="";
-let token = "";
-// preview
-photo.onchange = ()=>{
-let file = photo.files[0];
-if(file){
-preview.src = URL.createObjectURL(file);
-preview.style.display="block";
-}
-};
-await fetch("/.netlify/functions/send", {
-  method: "POST",
-  headers: {"Content-Type":"application/json"},
-  body: JSON.stringify({
-    name: name.value,
-    phone: phone.value,
-    passport: passport.value,
-    country: country.value
-  })
-});
+const form = document.getElementById("form");
+const toast = document.getElementById("toast");
+
 form.onsubmit = async (e)=>{
 e.preventDefault();
 
-let text = `New User:
-Name: ${name.value}
-Phone: ${phone.value}
-Passport: ${passport.value}
-Country: ${country.value}`;
-
-// Telegram text
-await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({chat_id,text})
+const toBase64 = file => new Promise((res)=>{
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = ()=> res(reader.result.split(",")[1]);
 });
+
+let photoBase64 = "";
+let pdfBase64 = "";
+
+if(photo.files[0]){
+  photoBase64 = await toBase64(photo.files[0]);
+}
+
+if(passportFile.files[0]){
+  pdfBase64 = await toBase64(passportFile.files[0]);
+}
+
 await fetch("/.netlify/functions/send", {
-  method: "POST",
-  headers: {"Content-Type":"application/json"},
-  body: JSON.stringify({
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
     name: name.value,
     phone: phone.value,
     passport: passport.value,
@@ -133,46 +105,8 @@ await fetch("/.netlify/functions/send", {
   })
 });
 
-// toast
 toast.style.display="block";
 setTimeout(()=>toast.style.display="none",3000);
-};
-// Photo
-let file = photo.files[0];
-if(file){
-let fd = new FormData();
-fd.append("chat_id",chat_id);
-fd.append("photo",file);
-
-await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-method:"POST",
-body:fd
-});
-}
-
-// PDF
-let doc = passportFile.files[0];
-if(doc){
-let fd = new FormData();
-fd.append("chat_id",chat_id);
-fd.append("document",doc);
-
-await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
-method:"POST",
-body:fd
-});
-}
-
-// Email
-emailjs.send("YOUR_SERVICE","YOUR_TEMPLATE",{
-name:name.value,
-phone:phone.value
-});
-
-// toast
-toast.style.display="block";
-setTimeout(()=>toast.style.display="none",3000);
-
 };
 </script>
 
