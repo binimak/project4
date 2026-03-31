@@ -1,47 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
 
 <style>
-body {
-    font-family: Arial;
-    background:#f4f6f9;
-    padding:20px;
+body{font-family:Arial;background:#f4f6f9;padding:20px;}
+
+.top{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
 }
 
-h2 {
-    text-align:center;
+input{
+padding:10px;
+width:250px;
 }
 
-table {
-    width:100%;
-    border-collapse: collapse;
-    margin-top:20px;
+button{
+padding:10px;
+background:#0d47a1;
+color:white;
+border:none;
+cursor:pointer;
 }
 
-th, td {
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:left;
+table{
+width:100%;
+border-collapse:collapse;
 }
 
-th {
-    background:#0d47a1;
-    color:white;
+th,td{
+border:1px solid #ccc;
+padding:10px;
 }
 
-tr:hover {
-    background:#f1f1f1;
+th{
+background:#0d47a1;
+color:white;
 }
 </style>
-
 </head>
 
 <body>
 
-<h2>📊 Registered Users</h2>
+<script>
+// 🔐 protect page
+if(localStorage.getItem("admin") !== "true"){
+window.location.href="login.html";
+}
+</script>
+
+<div class="top">
+<input type="text" id="search" placeholder="Search name...">
+<div>
+<button onclick="exportExcel()">Export Excel</button>
+<button onclick="logout()">Logout</button>
+</div>
+</div>
 
 <table id="table">
 <thead>
@@ -50,20 +66,17 @@ tr:hover {
 <th>Phone</th>
 <th>Passport</th>
 <th>Country</th>
-<th>Date</th>
+<th>Action</th>
 </tr>
 </thead>
-
 <tbody></tbody>
-
 </table>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔴 SAME CONFIG
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -73,27 +86,68 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// LOAD DATA
-const querySnapshot = await getDocs(collection(db, "users"));
+let allData = [];
 
-const table = document.querySelector("#table tbody");
+const load = async () => {
+const snap = await getDocs(collection(db,"users"));
+const table = document.querySelector("tbody");
 
-querySnapshot.forEach((doc) => {
-let d = doc.data();
+table.innerHTML = "";
 
-let row = `
+snap.forEach(d => {
+let data = d.data();
+data.id = d.id;
+allData.push(data);
+
+table.innerHTML += `
 <tr>
-<td>${d.name}</td>
-<td>${d.phone}</td>
-<td>${d.passport}</td>
-<td>${d.country}</td>
-<td>${d.date}</td>
+<td>${data.name}</td>
+<td>${data.phone}</td>
+<td>${data.passport}</td>
+<td>${data.country}</td>
+<td><button onclick="del('${data.id}')">Delete</button></td>
 </tr>
 `;
-
-table.innerHTML += row;
-
 });
+};
+
+window.del = async (id)=>{
+if(confirm("Delete user?")){
+await deleteDoc(doc(db,"users",id));
+location.reload();
+}
+};
+
+window.logout = ()=>{
+localStorage.removeItem("admin");
+location.href="login.html";
+};
+
+window.exportExcel = ()=>{
+let csv = "Name,Phone,Passport,Country\n";
+
+allData.forEach(u=>{
+csv += `${u.name},${u.phone},${u.passport},${u.country}\n`;
+});
+
+let blob = new Blob([csv], {type:"text/csv"});
+let a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "users.csv";
+a.click();
+};
+
+// 🔍 search
+document.getElementById("search").addEventListener("input", function(){
+let val = this.value.toLowerCase();
+let rows = document.querySelectorAll("tbody tr");
+
+rows.forEach(r=>{
+r.style.display = r.innerText.toLowerCase().includes(val) ? "" : "none";
+});
+});
+
+load();
 
 </script>
 
