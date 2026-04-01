@@ -2,48 +2,51 @@ const fetch = require("node-fetch");
 const FormData = require("form-data");
 
 exports.handler = async (event) => {
-  const token = process.env.TG_TOKEN;
-  const chat_id = process.env.CHAT_ID;
+  const data = JSON.parse(event.body);
 
-  const body = event.body ? JSON.parse(event.body) : {};
-
+  // ✅ text
   const text = `
 New User:
-Name: ${body.name}
-Phone: ${body.phone}
-Passport: ${body.passport}
-Country: ${body.country}
+Name: ${data.name}
+Phone: ${data.phone}
+Passport: ${data.passport}
+Country: ${data.country}
 `;
 
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  await fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id, text })
+    body: JSON.stringify({
+      chat_id: "YOUR_CHAT_ID",
+      text: text
+    })
   });
 
-  
-  if (body.photo) {
-    const form = new FormData();
-    form.append("chat_id", chat_id);
-    form.append("photo", Buffer.from(body.photo, "base64"), {
-      filename: "photo.jpg"
-    });
-
-    await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+  // ✅ photo
+  if (data.photo) {
+    await fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/sendPhoto`, {
       method: "POST",
-      body: form
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: "YOUR_CHAT_ID",
+        photo: `data:image/jpeg;base64,${data.photo}`
+      })
     });
   }
 
-  
-  if (body.passportFile) {
+  // 🔥 PDF FIX (IMPORTANT)
+  if (data.passportFile) {
     const form = new FormData();
-    form.append("chat_id", chat_id);
-    form.append("document", Buffer.from(body.passportFile, "base64"), {
-      filename: "passport.pdf"
+
+    const buffer = Buffer.from(data.passportFile, "base64");
+
+    form.append("chat_id", "YOUR_CHAT_ID");
+    form.append("document", buffer, {
+      filename: "passport.pdf",
+      contentType: "application/pdf"
     });
 
-    await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+    await fetch(`https://api.telegram.org/botYOUR_BOT_TOKEN/sendDocument`, {
       method: "POST",
       body: form
     });
@@ -51,6 +54,6 @@ Country: ${body.country}
 
   return {
     statusCode: 200,
-    body: "All sent"
+    body: "OK"
   };
 };
