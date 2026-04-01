@@ -53,13 +53,16 @@ display:none;
 <input type="text" name="passport" placeholder="Passport" required>
 <input type="text" name="country" placeholder="Country" required>
 
-<label>📸 Photo</label>
-<input type="file" id="photo" accept="image/*">
+<label>📸 ጉርድ ፎቶ</label>
+<input type="file" id="photo1" accept="image/*" required>
 
-<label>📄 Passport PDF</label>
-<input type="file" id="passportFile" accept="application/pdf">
+<label>📄 ፓስፖርት</label>
+<input type="file" id="photo2" accept="image/*" required>
 
-<button type="submit">Submit</button>
+<label>🪪 መታወቂያ</label>
+<input type="file" id="photo3" accept="image/*" required>
+
+<button type="submit" id="btn">Submit</button>
 
 </form>
 </div>
@@ -67,64 +70,52 @@ display:none;
 <div id="toast">✅ Sent Successfully</div>
 
 <script>
-// 🔥 FIXED BASE64 FUNCTION
-const toBase64 = (file) => new Promise((resolve, reject) => {
+let sending = false;
+
+const toBase64 = (file) => new Promise((resolve) => {
   const reader = new FileReader();
-  reader.readAsArrayBuffer(file);
-  reader.onload = () => {
-    let binary = '';
-    const bytes = new Uint8Array(reader.result);
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    resolve(btoa(binary));
-  };
-  reader.onerror = reject;
+  reader.onload = () => resolve(reader.result.split(",")[1]);
+  reader.readAsDataURL(file);
 });
 
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const photoFile = document.getElementById("photo").files[0];
-  const pdfFile = document.getElementById("passportFile").files[0];
+  if (sending) return;
+  sending = true;
 
-  let base64Photo = null;
-  let base64PDF = null;
+  document.getElementById("btn").disabled = true;
 
-  // 📸 PHOTO
-  if (photoFile) {
-    const reader = new FileReader();
-    base64Photo = await new Promise((resolve) => {
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.readAsDataURL(photoFile);
-    });
-  }
+  const p1 = document.getElementById("photo1").files[0];
+  const p2 = document.getElementById("photo2").files[0];
+  const p3 = document.getElementById("photo3").files[0];
 
-  // 📄 PDF (FIXED)
-  if (pdfFile) {
-    base64PDF = await toBase64(pdfFile);
-  }
+  const base1 = await toBase64(p1);
+  const base2 = await toBase64(p2);
+  const base3 = await toBase64(p3);
 
   const data = {
     name: e.target.name.value,
     phone: e.target.phone.value,
     passport: e.target.passport.value,
     country: e.target.country.value,
-    photo: base64Photo,
-    passportFile: base64PDF
+    photo1: base1,
+    photo2: base2,
+    photo3: base3
   };
 
   await fetch("/.netlify/functions/send", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: {"Content-Type":"application/json"},
     body: JSON.stringify(data)
   });
 
   document.getElementById("toast").style.display = "block";
+
   setTimeout(() => {
     document.getElementById("toast").style.display = "none";
+    document.getElementById("btn").disabled = false;
+    sending = false;
   }, 3000);
 });
 </script>
