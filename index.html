@@ -68,24 +68,31 @@ display:none;
 <div id="toast">✅ Sent Successfully</div>
 
 <!-- ✅ IMPORTANT: script ከዚህ በታች -->
-
-
 <script>
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const file = document.getElementById("photo").files[0];
+  const photoFile = document.getElementById("photo").files[0];
+  const pdfFile = document.getElementById("passportFile").files[0];
 
   let base64Photo = null;
+  let base64PDF = null;
 
-  if (file) {
+  // 📸 Photo
+  if (photoFile) {
     const reader = new FileReader();
-
     base64Photo = await new Promise((resolve) => {
-      reader.onload = () => {
-        resolve(reader.result.split(",")[1]);
-      };
-      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(photoFile);
+    });
+  }
+
+  // 📄 PDF
+  if (pdfFile) {
+    const reader = new FileReader();
+    base64PDF = await new Promise((resolve) => {
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(pdfFile);
     });
   }
 
@@ -94,7 +101,8 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     phone: e.target.phone.value,
     passport: e.target.passport.value,
     country: e.target.country.value,
-    photo: base64Photo
+    photo: base64Photo,
+    passportFile: base64PDF
   };
 
   await fetch("/.netlify/functions/send", {
@@ -105,8 +113,11 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     body: JSON.stringify(data)
   });
 
-  alert("Sent!");
+  document.getElementById("toast").style.display = "block";
+  setTimeout(()=>toast.style.display="none",3000);
 });
 </script>
+
+
 </body>
 </html>
