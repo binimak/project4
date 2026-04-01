@@ -14,11 +14,28 @@ exports.handler = async (event) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: CHAT,
-        text: `New User:
-Name: ${data.name}
-Phone: ${data.phone}
-Passport: ${data.passport}
-Country: ${data.country}`
+        text: `🆕 New Registration:
+
+👤 Name: ${data.name}
+👤 ሰም: ${data.name_am}
+
+🎂 Age: ${data.age}
+🎂 እድሜ: ${data.age_am}
+
+📅 Date of Birth: ${data.dob}
+📅 ትዉልድ ቀን: ${data.dob_am}
+
+📍 Birthplace: ${data.birthplace}
+📍 የትዉልድ ቦታ: ${data.birthplace_am}
+
+📞 Phone: ${data.phone}
+📞 ስልክ: ${data.phone_am}
+
+🌍 Country Started: ${data.country}
+🌍 ሂደት የጀመረበት: ${data.country_am}
+
+🎓 Education: ${data.education}
+`
       })
     });
 
