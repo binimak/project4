@@ -67,6 +67,21 @@ display:none;
 <div id="toast">✅ Sent Successfully</div>
 
 <script>
+// 🔥 FIXED BASE64 FUNCTION
+const toBase64 = (file) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+  reader.onload = () => {
+    let binary = '';
+    const bytes = new Uint8Array(reader.result);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    resolve(btoa(binary));
+  };
+  reader.onerror = reject;
+});
+
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -76,7 +91,7 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   let base64Photo = null;
   let base64PDF = null;
 
-  // 📸 Photo
+  // 📸 PHOTO
   if (photoFile) {
     const reader = new FileReader();
     base64Photo = await new Promise((resolve) => {
@@ -85,13 +100,9 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     });
   }
 
-  // 📄 PDF
+  // 📄 PDF (FIXED)
   if (pdfFile) {
-    const reader = new FileReader();
-    base64PDF = await new Promise((resolve) => {
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.readAsDataURL(pdfFile);
-    });
+    base64PDF = await toBase64(pdfFile);
   }
 
   const data = {
@@ -115,7 +126,6 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   setTimeout(() => {
     document.getElementById("toast").style.display = "none";
   }, 3000);
-
 });
 </script>
 
