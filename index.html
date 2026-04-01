@@ -475,38 +475,50 @@ let reader=new FileReader();
 reader.onload=()=>r(reader.result.split(",")[1]);
 reader.readAsDataURL(f);
 });
+form.onsubmit = async (e) => {
+  e.preventDefault();
 
-/* SUBMIT */
-form.onsubmit=async(e)=>{
-e.preventDefault();
+  btn.disabled = true;
 
-btn.disabled=true;
+  let data = {
+    name: form["Name"].value,
+    name_am: form["ሰም"].value,
 
-let data={
-name:form.name.value,
-phone:form.phone.value,
-passport:form.passport.value,
-country:form.country.value,
-photo1:await toBase64(photo1.files[0]),
-photo2:await toBase64(photo2.files[0]),
-photo3:await toBase64(photo3.files[0]),
-photo4:await toBase64(photo4.files[0])
-};
+    age: form["Age"].value,
+    age_am: form["እድሜ"].value,
 
-await fetch("/.netlify/functions/send",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
-});
+    dob: form["Date of Birth"].value,
+    dob_am: form["ትዉልድ ቀን"].value,
 
-/* SUCCESS */
-document.getElementById("toast").style.display="block";
+    birthplace: form["Birthplace"].value,
+    birthplace_am: form["የትዉልድ ቦታ"].value,
 
-setTimeout(()=>{
-document.getElementById("toast").style.display="none";
-btn.disabled=false;
-},3000);
+    phone: form["Phone Number"].value,
+    phone_am: form["ሰልክ ቁጥር"].value,
 
+    country: form["Country Where process Started"].value,
+    country_am: form["ሂደቱ ሚጀመርበት አገር"].value,
+
+    education: form["education"].value,
+
+    photo1: await toBase64(photo1.files[0]),
+    photo2: await toBase64(photo2.files[0]),
+    photo3: await toBase64(photo3.files[0]),
+    photo4: await toBase64(photo4.files[0])
+  };
+
+  await fetch("/.netlify/functions/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  document.getElementById("toast").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("toast").style.display = "none";
+    btn.disabled = false;
+  }, 3000);
 };
 <select name="education" required>
   <option value="">Select Education Level</option>
