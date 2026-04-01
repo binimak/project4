@@ -39,7 +39,6 @@ padding:15px;
 display:none;
 }
 </style>
-
 </head>
 
 <body>
@@ -49,16 +48,16 @@ display:none;
 <div class="container">
 <form id="form">
 
-<input type="text" id="name" placeholder="Name" required>
-<input type="text" id="phone" placeholder="Phone">
-<input type="text" id="passport" placeholder="Passport">
-<input type="text" id="country" placeholder="Country">
+<input type="text" name="name" placeholder="Name" required>
+<input type="text" name="phone" placeholder="Phone" required>
+<input type="text" name="passport" placeholder="Passport" required>
+<input type="text" name="country" placeholder="Country" required>
 
 <label>📸 Photo</label>
-<input type="file" id="photo">
+<input type="file" id="photo" accept="image/*">
 
 <label>📄 Passport PDF</label>
-<input type="file" id="passportFile">
+<input type="file" id="passportFile" accept="application/pdf">
 
 <button type="submit">Submit</button>
 
@@ -67,7 +66,6 @@ display:none;
 
 <div id="toast">✅ Sent Successfully</div>
 
-<!-- ✅ IMPORTANT: script ከዚህ በታች -->
 <script>
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -114,10 +112,12 @@ document.getElementById("form").addEventListener("submit", async (e) => {
   });
 
   document.getElementById("toast").style.display = "block";
-  setTimeout(()=>toast.style.display="none",3000);
+  setTimeout(() => {
+    document.getElementById("toast").style.display = "none";
+  }, 3000);
+
 });
 </script>
-
 
 </body>
 </html>
