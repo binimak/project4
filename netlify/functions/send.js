@@ -21,6 +21,7 @@ Country: ${body.country}
     body: JSON.stringify({ chat_id, text })
   });
 
+  
   if (body.photo) {
     const form = new FormData();
     form.append("chat_id", chat_id);
@@ -34,6 +35,7 @@ Country: ${body.country}
     });
   }
 
+  
   if (body.passportFile) {
     const form = new FormData();
     form.append("chat_id", chat_id);
