@@ -68,47 +68,54 @@ display:none;
 <div id="toast">✅ Sent Successfully</div>
 
 <!-- ✅ IMPORTANT: script ከዚህ በታች -->
+<form id="form">
+  <input name="name" placeholder="Name" required><br>
+  <input name="phone" placeholder="Phone" required><br>
+  <input name="passport" placeholder="Passport" required><br>
+  <input name="country" placeholder="Country" required><br>
+
+  <input type="file" id="photo" accept="image/*"><br>
+
+  <button type="submit">Send</button>
+</form>
+
 <script>
-const form = document.getElementById("form");
-const toast = document.getElementById("toast");
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-form.onsubmit = async (e)=>{
-e.preventDefault();
+  const file = document.getElementById("photo").files[0];
 
-const toBase64 = file => new Promise((res)=>{
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = ()=> res(reader.result.split(",")[1]);
+  let base64Photo = null;
+
+  if (file) {
+    const reader = new FileReader();
+
+    base64Photo = await new Promise((resolve) => {
+      reader.onload = () => {
+        resolve(reader.result.split(",")[1]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const data = {
+    name: e.target.name.value,
+    phone: e.target.phone.value,
+    passport: e.target.passport.value,
+    country: e.target.country.value,
+    photo: base64Photo
+  };
+
+  await fetch("/.netlify/functions/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  alert("Sent!");
 });
-
-let photoBase64 = "";
-let pdfBase64 = "";
-
-if(photo.files[0]){
-  photoBase64 = await toBase64(photo.files[0]);
-}
-
-if(passportFile.files[0]){
-  pdfBase64 = await toBase64(passportFile.files[0]);
-}
-
-await fetch("/.netlify/functions/send", {
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({
-    name: name.value,
-    phone: phone.value,
-    passport: passport.value,
-    country: country.value,
-    photo: photoBase64,
-    passportFile: pdfBase64
-  })
-});
-
-toast.style.display="block";
-setTimeout(()=>toast.style.display="none",3000);
-};
 </script>
-
 </body>
 </html>
