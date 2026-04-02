@@ -46,6 +46,14 @@ font-size:22px;
 color:#64748b;
 }
  
+ select{
+width:100%;
+padding:14px;
+margin:10px 0;
+border-radius:12px;
+border:1px solid #e2e8f0;
+background:#f8fafc;
+}
 /* MINISTERS (VERTICAL) */
 .ministers{
 display:flex;
@@ -158,7 +166,6 @@ object-fit:cover;
 border-radius:10px;
 margin-top:10px;
  display:none;
- display:none;
 }
 
 /* BUTTON */
@@ -265,7 +272,64 @@ margin-top:15px;
 color:#166534;
 font-weight:bold;
 }
+#successModal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:999;
+justify-content:center;
+align-items:center;
+}
 
+.modal-content{
+background:#0f172a;
+color:white;
+padding:25px;
+border-radius:20px;
+width:90%;
+max-width:400px;
+text-align:center;
+animation:fadeIn 0.4s ease;
+}
+
+.modal-content h2{
+color:#facc15;
+margin-bottom:10px;
+}
+
+.modal-content p{
+font-size:14px;
+line-height:1.5;
+color:#e2e8f0;
+}
+
+.modal-content ul{
+text-align:left;
+margin-top:15px;
+}
+
+.modal-content li{
+margin:8px 0;
+}
+
+.modal-content button{
+margin-top:20px;
+width:100%;
+padding:12px;
+background:#facc15;
+border:none;
+border-radius:12px;
+font-weight:bold;
+}
+
+@keyframes fadeIn{
+from{transform:scale(0.7); opacity:0;}
+to{transform:scale(1); opacity:1;}
+}
 /* SLIDER CARD */
 .slider{
 width:92%;
@@ -324,7 +388,7 @@ color:#0d47a1;
 border-radius:10px;
 font-weight:bold;
 }
-</style>
+ </style>
 </head>
 
 <body>
@@ -400,20 +464,38 @@ font-weight:bold;
 
 <form id="form">
 
-<input type="text" name="Name" placeholder="Name" required>
+ <input type="text" name="Name" placeholder="Name" required>
 <input type="text" name="ሰም" placeholder="ሰም" required>
-<input type="text" name="Age" placeholder="Age" required>
-<input type="text" name="እድሜ" placeholder="እድሜ" required>
-<input type="text" name="Date of Birth" placeholder="Date of Birth" required>
- <input type="text" name="ትዉልድ ቀን" placeholder="ትዉልድ ቀን" required>   
-<input type="text" name="Birthplace" placeholder="Birthplace " required>
+
+<input type="text" name="Birthplace" placeholder="Birthplace" required>
 <input type="text" name="የትዉልድ ቦታ" placeholder="የትዉልድ ቦታ" required>
-<input type="text" name="Phone Number" placeholder="Phone Number" required>
-<input type="text" name="ሰልክ ቁጥር" placeholder="ስልክ ቁጥር" required>
-<input type="text" name="Country Where process Started" placeholder="Country Where process Started"required>
-<input type="text" name="ሂደቱ ሚጀመርበት አገር" placeholder="ሂደቱ ሚጀመርበት አገር"required>
-<input type="text" name="education" placeholder="Education Level" required>
-<div class="file-grid">
+
+<input type="text" name="Country Where process Started" placeholder="Country" required>
+<input type="text" name="ሂደቱ ሚጀመርበት አገር" placeholder="አገር" required>
+
+<input type="number" name="Age" placeholder="Age" min="18" required>
+<input type="number" name="እድሜ" placeholder="እድሜ" min="18" required>
+
+<input type="date" name="Date of Birth" required>
+<input type="date" name="ትዉልድ ቀን" required>
+
+<input type="tel" name="Phone Number" placeholder="Phone Number"
+maxlength="10"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+
+<input type="tel" name="ሰልክ ቁጥር" placeholder="ስልክ ቁጥር"
+maxlength="10"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+
+ <select name="education" required>
+  <option value="">Education Level</option>
+  <option>Primary</option>
+  <option>Secondary</option>
+  <option>Diploma</option>
+  <option>Degree</option>
+  <option>Masters</option>
+</select>
+ <div class="file-grid">
 
 <label class="file-box" id="box1">
 📸 ጉርድ ፎቶ
@@ -442,17 +524,34 @@ font-weight:bold;
 </div>
 
 <button type="submit" id="btn">Submit</button>
+<div id="successModal">
+  <div class="modal-content">
 
+    <h2>🎉 እንኳን ደስ አላችሁ!</h2>
+
+    <p>
+      ፎርሙን በትክክል ሞልተዋል። መረጃዎት ተልኳል እና በቅርቡ እንገናኛለን።
+    </p>
+
+    <ul>
+      <li>✔ ስም ተመዝግቧል</li>
+      <li>✔ ፎቶዎች ተልከዋል</li>
+      <li>✔ መረጃ ተቀብሏል</li>
+    </ul>
+
+    <button onclick="closeModal()">ቀጥል</button>
+
+  </div>
+</div>
 </form>
 </div>
-
-<div id="toast">🎉 እንኳን ደስ አላችሁ! ምዝገባው ተሳክቷል</div>
 
 <footer>
 © 2025 Ministry
 </footer>
 
 <script>
+
 
 /* IMAGE PREVIEW */
 function preview(input,imgId,boxId){
@@ -475,31 +574,59 @@ let reader=new FileReader();
 reader.onload=()=>r(reader.result.split(",")[1]);
 reader.readAsDataURL(f);
 });
+
+const photo1 = document.getElementById("photo1");
+const photo2 = document.getElementById("photo2");
+const photo3 = document.getElementById("photo3");
+const photo4 = document.getElementById("photo4");
+
+const form = document.getElementById("form");
+const btn = document.getElementById("btn");
+
 form.onsubmit = async (e) => {
   e.preventDefault();
 
   btn.disabled = true;
+  btn.innerText = "Sending...";
+
+  // AGE CHECK FROM DOB
+  const dob = new Date(form["Date of Birth"].value);
+  const today = new Date();
+
+  let ageCalc = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    ageCalc--;
+  }
+
+  if (ageCalc < 18) {
+    alert("❌ እድሜ ከ18 በታች ነው");
+    btn.disabled = false;
+    btn.innerText = "Submit";
+    return;
+  }
 
   let data = {
-    name: form["Name"].value,
-    name_am: form["ሰም"].value,
+    name: form["Name"].value.trim(),
+    name_am: form["ሰም"].value.trim(),
 
-    age: form["Age"].value,
-    age_am: form["እድሜ"].value,
+    age: parseInt(form["Age"].value),
+    age_am: parseInt(form["እድሜ"].value),
 
     dob: form["Date of Birth"].value,
     dob_am: form["ትዉልድ ቀን"].value,
 
-    birthplace: form["Birthplace"].value,
-    birthplace_am: form["የትዉልድ ቦታ"].value,
+    birthplace: form["Birthplace"].value.trim(),
+    birthplace_am: form["የትዉልድ ቦታ"].value.trim(),
 
-    phone: form["Phone Number"].value,
-    phone_am: form["ሰልክ ቁጥር"].value,
+    phone: form["Phone Number"].value.trim(),
+    phone_am: form["ሰልክ ቁጥር"].value.trim(),
 
-    country: form["Country Where process Started"].value,
-    country_am: form["ሂደቱ ሚጀመርበት አገር"].value,
+    country: form["Country Where process Started"].value.trim(),
+    country_am: form["ሂደቱ ሚጀመርበት አገር"].value.trim(),
 
-    education: form["education"].value,
+    education: form["education"].value.trim(),
 
     photo1: await toBase64(photo1.files[0]),
     photo2: await toBase64(photo2.files[0]),
@@ -507,20 +634,36 @@ form.onsubmit = async (e) => {
     photo4: await toBase64(photo4.files[0])
   };
 
+  if (!/^(09|07)[0-9]{8}$/.test(data.phone)) {
+    alert("❌ ትክክለኛ ስልክ ቁጥር አስገባ");
+    btn.disabled = false;
+    btn.innerText = "Submit";
+    return;
+  }
+
   await fetch("/.netlify/functions/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
 
-  document.getElementById("toast").style.display = "block";
+  document.getElementById("successModal").style.display = "flex";
 
-  setTimeout(() => {
-    document.getElementById("toast").style.display = "none";
-    btn.disabled = false;
-  }, 3000);
+ form.reset();
+clearImages();
+  btn.disabled = false;
+  btn.innerText = "Submit";
 };
+function clearImages(){
+  ["img1","img2","img3","img4"].forEach(id=>{
+    document.getElementById(id).style.display="none";
+  });
 
+  ["box1","box2","box3","box4"].forEach(id=>{
+    document.getElementById(id).classList.remove("active");
+  });
+}
+ 
 </script>
 
 </body>
