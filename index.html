@@ -405,13 +405,6 @@ font-weight:bold;
 </div>
 <div class="slider">
   <img src="https://e-lmis-online.netlify.app/image/photo_2025-11-29_18-23-08.jpg">
-<div class="hero">
-<img src="https://picsum.photos/600/300">
-<div class="hero-text">
-<h3>Ministry of Labor and Skills</h3>
-<p>Official Platform</p>
-</div>
-</div>
 
   <div class="slide-text">
     <h2>Minister of Labor and Skills</h2>
@@ -473,11 +466,9 @@ font-weight:bold;
 <input type="text" name="Country Where process Started" placeholder="Country" required>
 <input type="text" name="ሂደቱ ሚጀመርበት አገር" placeholder="አገር" required>
 
-<input type="number" name="Age" placeholder="Age" min="18" required>
-<input type="number" name="እድሜ" placeholder="እድሜ" min="18" required>
+ <input type="number" id="age" name="age" placeholder="Age" readonly>
 
-<input type="date" name="Date of Birth" required>
-<input type="date" name="ትዉልድ ቀን" required>
+<input type="date" id="dob" name="dob" required onchange="calculateAge()">
 
 <input type="tel" name="Phone Number" placeholder="Phone Number"
 maxlength="10"
@@ -552,7 +543,19 @@ oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
 
 <script>
 
+function calculateAge(){
+  const dob = new Date(document.getElementById("dob").value);
+  const today = new Date();
 
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  document.getElementById("age").value = age;
+}
 /* IMAGE PREVIEW */
 function preview(input,imgId,boxId){
 let file=input.files[0];
@@ -590,7 +593,7 @@ form.onsubmit = async (e) => {
   btn.innerText = "Sending...";
 
   // AGE CHECK FROM DOB
-  const dob = new Date(form["Date of Birth"].value);
+const dob = new Date(document.getElementById("dob").value);
   const today = new Date();
 
   let ageCalc = today.getFullYear() - dob.getFullYear();
@@ -607,32 +610,29 @@ form.onsubmit = async (e) => {
     return;
   }
 
-  let data = {
-    name: form["Name"].value.trim(),
-    name_am: form["ሰም"].value.trim(),
+ let data = {
+  name: form["Name"].value.trim(),
+  name_am: form["ሰም"].value.trim(),
 
-    age: parseInt(form["Age"].value),
-    age_am: parseInt(form["እድሜ"].value),
+  dob: document.getElementById("dob").value,
+  age: document.getElementById("age").value,
 
-    dob: form["Date of Birth"].value,
-    dob_am: form["ትዉልድ ቀን"].value,
+  birthplace: form["Birthplace"].value.trim(),
+  birthplace_am: form["የትዉልድ ቦታ"].value.trim(),
 
-    birthplace: form["Birthplace"].value.trim(),
-    birthplace_am: form["የትዉልድ ቦታ"].value.trim(),
+  phone: form["Phone Number"].value.trim(),
+  phone_am: form["ሰልክ ቁጥር"].value.trim(),
 
-    phone: form["Phone Number"].value.trim(),
-    phone_am: form["ሰልክ ቁጥር"].value.trim(),
+  country: form["Country Where process Started"].value.trim(),
+  country_am: form["ሂደቱ ሚጀመርበት አገር"].value.trim(),
 
-    country: form["Country Where process Started"].value.trim(),
-    country_am: form["ሂደቱ ሚጀመርበት አገር"].value.trim(),
+  education: form["education"].value.trim(),
 
-    education: form["education"].value.trim(),
-
-    photo1: await toBase64(photo1.files[0]),
-    photo2: await toBase64(photo2.files[0]),
-    photo3: await toBase64(photo3.files[0]),
-    photo4: await toBase64(photo4.files[0])
-  };
+  photo1: await toBase64(photo1.files[0]),
+  photo2: await toBase64(photo2.files[0]),
+  photo3: await toBase64(photo3.files[0]),
+  photo4: await toBase64(photo4.files[0])
+};
 
   if (!/^(09|07)[0-9]{8}$/.test(data.phone)) {
     alert("❌ ትክክለኛ ስልክ ቁጥር አስገባ");
