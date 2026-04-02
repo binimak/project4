@@ -256,11 +256,61 @@ z-index:2;
 }
 
 /* FOOTER */
-footer{
-text-align:center;
-padding:20px;
-font-size:14px;
-color:#cbd5e1;
+
+ .footer{
+  background:#0d47a1;
+  color:white;
+  padding:30px 20px;
+}
+
+.footer-top{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.footer-top p{
+  opacity:0.8;
+}
+
+.footer-desc{
+  font-size:14px;
+  line-height:1.6;
+  opacity:0.9;
+  text-align:center;
+}
+
+.footer-section{
+  margin-top:20px;
+}
+
+.footer-section h4{
+  margin-bottom:8px;
+}
+
+.footer-social{
+  text-align:center;
+  margin-top:20px;
+}
+
+.footer-social img{
+  margin:0 8px;
+  cursor:pointer;
+}
+
+.footer-bottom{
+  margin-top:25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+}
+
+.lang-btn{
+  background:white;
+  color:#0d47a1;
+  padding:5px 12px;
+  border-radius:15px;
+  font-weight:bold;
 }
  #success{
 display:none;
@@ -357,7 +407,40 @@ width:100%;
 height:100%;
 background:linear-gradient(120deg, rgba(13,71,161,0.8), rgba(0,0,0,0.4));
 }
+.lang-switch{
+  position:absolute;
+  top:10px;
+  right:10px;
+}
+body[dir="rtl"]{
+  text-align:right;
+}
 
+body[dir="rtl"] .footer-bottom{
+  flex-direction:row-reverse;
+}
+ .lang-switch button{
+  border:none;
+  padding:6px 10px;
+  margin-left:4px;
+  border-radius:8px;
+  background:#e2e8f0;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.lang-switch button:hover{
+  background:#2563eb;
+  color:white;
+}
+.lang-switch button{
+  border:none;
+  padding:5px 8px;
+  margin-left:4px;
+  border-radius:8px;
+  background:#e2e8f0;
+  cursor:pointer;
+}
 /* TEXT ON IMAGE */
 .slide-text{
 position:absolute;
@@ -388,11 +471,18 @@ color:#0d47a1;
 border-radius:10px;
 font-weight:bold;
 }
+
+  
  </style>
 </head>
 
 <body>
-
+<div class="lang-switch">
+  <button onclick="setLang('am')">አማ</button>
+  <button onclick="setLang('en')">EN</button>
+  <button onclick="setLang('or')">OR</button>
+  <button onclick="setLang('ar')">AR</button>
+</div>
 <!-- HEADER -->
 <div class="header">
 <img src="https://res.cloudinary.com/dwclusteb/image/upload/q_auto/f_auto/v1775159470/images_1_drqbwn.png">
@@ -400,8 +490,8 @@ font-weight:bold;
 
 <!-- TEXT -->
 <div class="section">
-<h2>የውጭ ሀገር የሥራ ስምሪት ህጋዊ ፈቃድ</h2>
-<p>የሥራና ክህሎት ሚኒስቴር ሀገራዊ ሪፎርሙን ተከትሎ የፌዴራል መንግሥት አስፈፃሚ አካላትን ሥልጣንና ተግባር ለመወሰን በወጣው አዋጅ ቁጥር 1263/2014 ተቋቋመ፡፡ ሚኒስቴር መስሪያ ቤቱ ሀገራዊ ሥራ ዕድል ፈጠራ፣ የክህሎት ልማት እና የአሰሪና ሰራተኛ ጉዳዮችን በበላይነት እንዲመራ ኃላፊነት ተሰጥቶታል፡፡
+<h2 data-key="title" > የውጭ ሀገር የሥራ ስምሪት ህጋዊ ፈቃድ</h2>
+<p data-key="desc"  የሥራና ክህሎት ሚኒስቴር ሀገራዊ ሪፎርሙን ተከትሎ የፌዴራል መንግሥት አስፈፃሚ አካላትን ሥልጣንና ተግባር ለመወሰን በወጣው አዋጅ ቁጥር 1263/2014 ተቋቋመ፡፡ ሚኒስቴር መስሪያ ቤቱ ሀገራዊ ሥራ ዕድል ፈጠራ፣ የክህሎት ልማት እና የአሰሪና ሰራተኛ ጉዳዮችን በበላይነት እንዲመራ ኃላፊነት ተሰጥቶታል፡፡
 ዝርዝር
 የአጠቃቀም ህግ
 የቅጂ መብት
@@ -411,7 +501,7 @@ Tel no: +251 962513636
 ፋክስ፡ +251 116 671568
 ከላምበርት የኢትዮጵያ ቴክኒክና ሙያ ኢንስቲትዩት ጀርባ</p>
 </div>
-<div class="slider"
+<div class="slider">
   <img src="https://e-lmis-online.netlify.app/image/photo_2025-11-29_18-23-08.jpg">
 
   <div class="slide-text">
@@ -612,11 +702,82 @@ oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
 </form>
 </div>
 
-<footer>
-© 2025 Ministry
+ <footer class="footer">
+
+  <div class="footer-top">
+    <h3>የስራና ክህሎት ሚኒስቴር</h3>
+    <p>Ministry of Labor and Skills</p>
+  </div>
+
+  <p class="footer-desc">
+    የስራና ክህሎት ሚኒስቴር በአዋጅ 1263/2014 ተቋቋመ።
+    የሀገራዊ ሥራ ፍጠራ፣ የክህሎት ልማት እና የሰራተኛ ጉዳዮችን ይቆጣጠራል።
+  </p>
+
+  <div class="footer-section">
+    <h4>📞 አግኙን</h4>
+    <p>+251 116 671792</p>
+    <p>ፖ.ሳ 25534</p>
+    <p>+251 116 671568</p>
+    <p>info@MoLS.gov.et</p>
+  </div>
+
+  <div class="footer-section">
+    <h4>📂 ሜኑ</h4>
+    <p>Privacy Policy</p>
+    <p>Copyright</p>
+  </div>
+
+  <div class="footer-social">
+    <img src="https://cdn-icons-png.flaticon.com/30/733/733547.png">
+    <img src="https://cdn-icons-png.flaticon.com/30/733/733579.png">
+    <img src="https://cdn-icons-png.flaticon.com/30/733/733646.png">
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 መብቶች ሁሉ የተጠበቁ ናቸው</p>
+   <div class="lang-btn" onclick="setLang('en')">🇺🇸 EN</div>
+  </div>
+
 </footer>
 
 <script>
+
+const t = {
+  am:{
+    title:"የውጭ ሀገር የሥራ ፈቃድ",
+    desc:"የስራና ክህሎት ሚኒስቴር ተቋቋመ።"
+  },
+  en:{
+    title:"Overseas Work Permit",
+    desc:"Ministry of Labor and Skills established."
+  },
+  or:{
+    title:"Hayyama Hojii Alaa",
+    desc:"Ministeerri hojii hundeeffame."
+  },
+  ar:{
+    title:"تصريح العمل",
+    desc:"تم تأسيس وزارة العمل"
+  }
+};
+
+function setLang(lang){
+
+  localStorage.setItem("lang",lang);
+
+  document.querySelectorAll("[data-key]").forEach(el=>{
+    let key = el.getAttribute("data-key");
+    el.innerText = t[lang][key];
+  });
+
+  document.body.style.direction = (lang==="ar") ? "rtl" : "ltr";
+}
+
+// LOAD SAVED
+window.onload = ()=>{
+  setLang(localStorage.getItem("lang") || "am");
+};
 
 function calculateAge(){
   const dob = new Date(document.getElementById("dob").value);
@@ -665,7 +826,7 @@ form.onsubmit = async (e) => {
   e.preventDefault();
 
   btn.disabled = true;
-  btn.innerText = "Sending...";
+ btn.innerText = (localStorage.getItem("lang") === "am") ? "በመላክ ላይ..." : "Sending...";
 
   // AGE CHECK FROM DOB
 const dob = new Date(document.getElementById("dob").value);
